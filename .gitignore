@@ -1,0 +1,6 @@
+# Catch-all for local ignorables
+ignore/
+
+# Build results
+*.bin
+*.exe
