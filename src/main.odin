@@ -1,12 +1,12 @@
 package main
 
-// import "core:fmt"
+import "core:fmt"
 import "core:math"
 import "core:math/rand"
 import rl "vendor:raylib"
 
 // Convenience
-// println :: fmt.println
+println :: fmt.println
 ENABLE_DEBUG_TXT :: false
 ENABLE_DEBUG_DRAWING :: false
 ENABLE_DEBUG_GODMODE :: false
@@ -53,7 +53,7 @@ main :: proc() {
 	render_upscale_factor: f32 = math.round(target_display_height / RENDER_HEIGHT)
 	render_wh := WHData_create(RENDER_HEIGHT * ASPECT_RATIO, RENDER_HEIGHT)
 	display_wh := WHData_create(render_upscale_factor * render_wh.w, render_upscale_factor * render_wh.h)
-	font_size: i32 = clamp(i32(20.0 * math.sqrt(display_wh.h / 720.0)), 6, 20)
+	font_size: i32 = i32(10 * clamp(math.ceil(math.sqrt(render_upscale_factor)), 1, 4))
 
 	// Properly setup the display window
 	rl.SetWindowSize(display_wh.wi, display_wh.hi)
