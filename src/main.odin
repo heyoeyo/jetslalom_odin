@@ -123,7 +123,7 @@ main :: proc() {
 	// Set up obstacles!
 	bank := ObstacleBank {
 		active_idx = 0,
-		num_active = 100,
+		num_active = 0,
 		max_idx    = MAX_NUM_SPAWN,
 	}
 

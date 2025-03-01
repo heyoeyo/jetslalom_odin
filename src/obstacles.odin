@@ -89,8 +89,10 @@ draw_obstacle_outlines :: proc(triangle: Obstacle) {
 }
 
 draw_all_obstacles :: proc(bank: ObstacleBank) {
+	rev_offset: i32
 	for idx_offset in 0 ..< bank.num_active {
-		idx := get_spawn_item_index(idx_offset, bank)
+		rev_offset = bank.num_active - idx_offset - 1
+		idx := get_spawn_item_index(rev_offset, bank)
 		draw_obstacle(bank.items[idx])
 		// draw_obstacle_outlines(obstacles[idx])
 	}
