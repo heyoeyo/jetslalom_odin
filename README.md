@@ -7,9 +7,17 @@ This repo contains a remake of an old web game called 'Jet slalom'. The goal of 
   <img src=".readme_assets/demo_anim.gif">
 </p>
 
-This was made to experiment with and learn the [Odin programming language](https://odin-lang.org/). If you'd like to alter the game, most of the logic is in the [main.odin](https://github.com/heyoeyo/jetslalom_odin/blob/main/src/main.odin) file. The sequence of stages (and how each stage is configured) can be found in the [stage_def.odin](https://github.com/heyoeyo/jetslalom_odin/blob/main/src/stage_def.odin) file.
+This was made to experiment with and learn the [Odin programming language](https://odin-lang.org/).
+
+If you'd like to alter the game, most of the logic is in the [main.odin](https://github.com/heyoeyo/jetslalom_odin/blob/main/src/main.odin) file. The sequence of stages (and how each stage is configured) can be found in the [stage_def.odin](https://github.com/heyoeyo/jetslalom_odin/blob/main/src/stage_def.odin) file.
 
 ## How to play
+
+### Online
+
+You can play the game for free on itch.io: https://heyoeyo.itch.io/jetslalom-remake
+
+(Made using the [Odin + Raylib + Web](https://github.com/karl-zylinski/odin-raylib-web) template)
 
 ### Download
 
