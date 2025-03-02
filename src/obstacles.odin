@@ -89,10 +89,10 @@ draw_obstacle_outlines :: proc(triangle: Obstacle) {
 }
 
 draw_all_obstacles :: proc(bank: ObstacleBank) {
-	rev_offset: i32
+	rev_offset, idx: i32
 	for idx_offset in 0 ..< bank.num_active {
 		rev_offset = bank.num_active - idx_offset - 1
-		idx := get_spawn_item_index(rev_offset, bank)
+		idx = get_spawn_item_index(rev_offset, bank)
 		draw_obstacle(bank.items[idx])
 		// draw_obstacle_outlines(obstacles[idx])
 	}
@@ -106,9 +106,12 @@ draw_all_obstacles_hide_early :: proc(bank: ObstacleBank, player_z: f32) {
 	can hurt visibility
 	*/
 
+	obs_ref: Obstacle
+	rev_offset, idx: i32
 	for idx_offset in 0 ..< bank.num_active {
-		idx := get_spawn_item_index(idx_offset, bank)
-		obs_ref := bank.items[idx]
+		rev_offset = bank.num_active - idx_offset - 1
+		idx = get_spawn_item_index(rev_offset, bank)
+		obs_ref = bank.items[idx]
 		if obs_ref.z < player_z {
 			draw_obstacle(obs_ref)
 			// draw_obstacle_outlines(obstacles[idx])
