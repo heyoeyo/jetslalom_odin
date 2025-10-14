@@ -11,15 +11,23 @@ ENABLE_DEBUG_TXT :: false
 ENABLE_DEBUG_DRAWING :: false
 ENABLE_DEBUG_GODMODE :: false
 
+// Game feel
 FRAMERATE: i32 : 24
 CAMERA_FOV_Y: f32 : 60
 MAX_CAMERA_ROLL_RAD: f32 : 0.7
+PLAYER_TURN_MOMENTUM_FACTOR: f32 : 0.2
+PLAYER_TURN_RATE_FACTOR: f32 : 2.75
+PLAYER_MAX_X_SPEED_FACTOR: f32 : 1.15
+TIME_TO_REACT_SEC: f32 : 1.75
+
+// GFX settings
 ASPECT_RATIO: f32 : 16.0 / 9.0
 RENDER_HEIGHT: f32 : 240
 PLAYER_SCREEN_BOTTOM_OFFSET: f32 : 0.2
 EXPLOSION_Y_OFFSET: i32 : 18
 EXPLOSION_TIME_SEC: f32 : 1
 
+// Player sizing parameters
 PLAYER_HALF_WIDTH: f32 : 2
 PLAYER_Y: f32 : 2.5
 CAMERA_Y_OFFSET: f32 : 5
@@ -27,7 +35,6 @@ CAMERA_Y_OFFSET: f32 : 5
 // Set distance of spawned obstacles as well as the 'travel speed'
 // -> Travel speed is set based on how long obstacles take to travel from spawn point to player
 HORIZON_Z: f32 = -100
-SPAWN_LIFETIME_SEC: f32 : 1.75
 MAX_NUM_SPAWN: i32 : 500
 
 // Setting for floating point error mitigation
@@ -98,13 +105,13 @@ main :: proc() {
 	}
 
 	// Set up player position & movement parameters
-	z_speed := (HORIZON_Z / SPAWN_LIFETIME_SEC)
+	z_speed := (HORIZON_Z / TIME_TO_REACT_SEC)
 	player := PlayerData {
 		y            = PLAYER_Y,
 		vz           = z_speed,
-		accel_x      = 2.75 * abs(z_speed),
-		decel_factor = 0.2,
-		max_vx       = 1.15 * abs(z_speed) * (camfov.fov_y_deg / 60.0),
+		accel_x      = PLAYER_TURN_RATE_FACTOR * abs(z_speed),
+		decel_factor = PLAYER_TURN_MOMENTUM_FACTOR,
+		max_vx       = PLAYER_MAX_X_SPEED_FACTOR * abs(z_speed) * (camfov.fov_y_deg / 60.0),
 		half_w       = PLAYER_HALF_WIDTH,
 	}
 
