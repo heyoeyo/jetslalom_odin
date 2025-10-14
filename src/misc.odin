@@ -29,6 +29,7 @@ LeaderControl :: struct {
 draw_text_centered :: proc(
 	text: cstring,
 	display_wh: WHData,
+	display_offset: [2]f32,
 	y_norm: f32,
 	fontSize: i32,
 	color: rl.Color,
@@ -45,8 +46,8 @@ draw_text_centered :: proc(
 	half_w := text_width / 2
 	half_h := fontSize / 2
 
-	x_px := display_wh.half_wi
-	y_px := i32(math.round(display_wh.h * y_norm)) + y_offset_px
+	x_px := i32(display_offset.x) + display_wh.half_wi
+	y_px := i32(display_offset.y + math.round(display_wh.h * y_norm)) + y_offset_px
 
 	rl.DrawText(text, x_px - half_w, y_px - half_h, fontSize, color)
 }

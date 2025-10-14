@@ -42,6 +42,7 @@ main :: proc() {
 
 	// Create window, otherwise tons of stuff fails unexpectedly...
 	rl.SetTraceLogLevel(rl.TraceLogLevel.WARNING)
+	rl.SetConfigFlags({.WINDOW_RESIZABLE})
 	rl.InitWindow(100, 100, "JetSlalom (Remake)")
 	defer rl.CloseWindow()
 
@@ -156,7 +157,27 @@ main :: proc() {
 	curr_stage: Stage
 	time := TimeData{}
 	lifetime_score_sec: i32 = -1
+	display_offset := [2]f32{0, 0}
 	for !rl.WindowShouldClose() {
+
+		// Update display sizing if window size changes
+		if rl.IsWindowResized() {
+			screen_width := rl.GetScreenWidth()
+			screen_height := rl.GetScreenHeight()
+			new_ar: f32 = f32(screen_width) / f32(screen_height)
+			new_width, new_height: i32
+			if new_ar > ASPECT_RATIO {
+				new_width = i32(f32(screen_height) * ASPECT_RATIO)
+				new_height = screen_height
+			} else {
+				new_height = i32(f32(screen_width) / ASPECT_RATIO)
+				new_width = screen_width
+			}
+			display_offset.x = max(0, f32(screen_width - new_width) * 0.5)
+			display_offset.y = max(0, f32(screen_height - new_height) * 0.5)
+			display_wh = WHData_create(new_width, new_height)
+		}
+
 
 		// **************************************************
 		// State update
@@ -558,10 +579,11 @@ main :: proc() {
 		rl.BeginDrawing()
 
 		// Draw upscaled image to screen, for pixelated effect
+		rl.ClearBackground(rl.BLACK)
 		rl.DrawTexturePro(
 			lowres_render_target.texture,
 			source = rl.Rectangle{0, 0, render_wh.w, -render_wh.h},
-			dest = rl.Rectangle{0, 0, display_wh.w, display_wh.h},
+			dest = rl.Rectangle{display_offset.x, display_offset.y, display_wh.w, display_wh.h},
 			origin = rl.Vector2{0, 0},
 			rotation = 0,
 			tint = rl.WHITE,
@@ -571,19 +593,22 @@ main :: proc() {
 		if gamestate.state == .Playing {
 			time_cstr := rl.TextFormat("%d", int(time.total - gamestate.time))
 			text_width: i32 = rl.MeasureText(time_cstr, font_size)
-			rl.DrawText(time_cstr, display_wh.wi - text_width - 10, 10, font_size, rl.WHITE)
+			rl.DrawText(time_cstr, display_wh.wi - text_width - 10 + i32(display_offset.x), 10, font_size, rl.WHITE)
 		}
 
 		// Draw start screen text, if needed
 		if gamestate.state == .Stopped {
-			draw_text_centered("Jet Slalom", display_wh, 0.15, 3 * font_size, rl.WHITE)
-			draw_text_centered("(remake)", display_wh, 0.15, font_size, rl.WHITE, y_offset_px = 2 * font_size)
+			draw_text_centered("Jet Slalom", display_wh, display_offset, 0.15, 3 * font_size, rl.WHITE)
+			draw_text_centered(
+				"(remake)", display_wh, display_offset, 0.15, font_size, rl.WHITE, y_offset_px = 2 * font_size
+			)
 
 			// Draw score, if available
 			if lifetime_score_sec > 0 {
 				draw_text_centered(
 					rl.TextFormat("Score: %d", lifetime_score_sec),
 					display_wh,
+					display_offset,
 					0.3,
 					2 * font_size,
 					rl.YELLOW,
@@ -593,12 +618,13 @@ main :: proc() {
 			draw_text_centered(
 				"Use arrow keys or A/D to avoid obstacles",
 				display_wh,
+				display_offset,
 				0.95,
 				font_size,
 				rl.BLACK,
 				y_offset_px = i32(-1.5 * f32(font_size)),
 			)
-			draw_text_centered("Push [space] to begin!!", display_wh, 0.95, font_size, rl.BLACK)
+			draw_text_centered("Push [space] to begin!!", display_wh, display_offset, 0.95, font_size, rl.BLACK)
 
 		}
 
