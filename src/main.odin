@@ -49,7 +49,7 @@ main :: proc() {
 
 	// Create window, otherwise tons of stuff fails unexpectedly...
 	rl.SetTraceLogLevel(rl.TraceLogLevel.WARNING)
-	rl.SetConfigFlags({.WINDOW_RESIZABLE})
+	rl.SetConfigFlags({.WINDOW_RESIZABLE, .VSYNC_HINT} if FRAMERATE <= 0 else {.WINDOW_RESIZABLE})
 	rl.InitWindow(100, 100, "JetSlalom (Remake)")
 	defer rl.CloseWindow()
 
