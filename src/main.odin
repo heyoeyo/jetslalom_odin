@@ -10,6 +10,7 @@ println :: fmt.println
 ENABLE_DEBUG_TXT :: false
 ENABLE_DEBUG_DRAWING :: false
 ENABLE_DEBUG_GODMODE :: false
+DEBUG_START_STAGE_IDX :: -1
 
 // Game feel
 FRAMERATE: i32 : -1
@@ -211,6 +212,9 @@ main :: proc() {
 			request_reset_game = false
 			need_stage_change = true
 			stage_idx = -1
+			if DEBUG_START_STAGE_IDX > 1 {
+				stage_idx = DEBUG_START_STAGE_IDX - 2
+			}
 		}
 
 		// Handle stage changes
@@ -300,10 +304,12 @@ main :: proc() {
 			next_leader_update_sec = time.total + new_duration
 		}
 
-		// Re-center the leader onto the player position if it gets too far away
+		// Prevent leader from getting too far away from the player
 		// (always want leader close to player, to provide at least one safe path)
-		if abs(leader.x - player.x) > (horizon.half_w * leader_ctrl.x_reset_threshold) {
-			leader.x = player.x
+		leader_x_diff := leader.x - player.x
+		leader_x_diff_threshold := horizon.half_w * leader_ctrl.x_reset_threshold
+		if abs(leader_x_diff) > leader_x_diff_threshold {
+			leader.x = player.x + math.sign(leader_x_diff) * leader_x_diff_threshold
 		}
 
 		// Update leader position based on simulated control
@@ -391,7 +397,8 @@ main :: proc() {
 						if bank.num_active >= bank.max_idx {
 							break grid_spawn_loop
 						}
-						next_x = (dir_x * data.x_spacing * f32(n)) + player.x + grid_x_offset
+						n_dir := f32(n) + max(0, dir_x) // Add 0 or 1 to prevent left/right dupe spawn on n=0
+						next_x = (dir_x * data.x_spacing * n_dir) + player.x + grid_x_offset
 
 						tri_wh = get_triangle_wh(curr_stage.tris)
 						spawn_new_obstacle(&bank, {next_x, z_corrected}, next_color, tri_wh)
@@ -453,7 +460,7 @@ main :: proc() {
 				next_color = get_cycling_color(next_color)
 			}
 
-			t_funnel_intro := clamp(5 * (1 - time.stage), 1, 5)
+			t_funnel_intro := clamp(3.5 * (2.5 - time.stage), 1, 9)
 			t_corri_spacing := data.t_spacing / t_funnel_intro
 			corri_width: f32 = data.width * t_funnel_intro
 			for time.total > next_spawn_time {
