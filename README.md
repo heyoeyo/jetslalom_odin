@@ -21,7 +21,7 @@ You can play the game for free on itch.io: https://heyoeyo.itch.io/jetslalom-rem
 
 ### Download
 
-Pre-built (x86) executables are available for Linux & Windows on the [releases page](https://github.com/heyoeyo/jetslalom_odin/releases/tag/v1.0).
+Pre-built (x86) executables are available for Linux & Windows on the [releases page](https://github.com/heyoeyo/jetslalom_odin/releases).
 
 ### Compile
 
